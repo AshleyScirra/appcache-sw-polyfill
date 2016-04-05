@@ -1,5 +1,7 @@
 # appcache-sw-polyfill
 
+For background, see the blog post [Service Workers are a pain in the ass](https://www.scirra.com/blog/ashley/27/service-workers-are-a-pain-in-the-ass).
+
 Chrome and Firefox are phasing out AppCache in favour of Service Worker. In the absence of any convincing polyfill to do the same thing AppCache does, I've tried to write my own. It didn't go too well. Note the code here is not yet production ready and has some bugs that need fixing before it will be useful.
 
 Despite the name this isn't really a polyfill, it intentionally works differently to AppCache, e.g. using a JSON format data file instead of that unusual plaintext format AppCache uses.
@@ -54,6 +56,12 @@ A minimal test case is provided in the test-files folder. Basically run a local 
 - Chrome: does not support cache control options, so after the upgrade you can get stale files. In the given test case, you get a mix of v1 and v2 files. This is a showstopper, because mixing versions basically results in a corrupt page for non-trivial web apps. See: crbug.com/453190
 - Firefox: does not allow JS to run outside of events. This appears to cause the background update check to be terminated so it never updates. The workaround is to implement some kind of postMessage dance with a real client, but is complicated by the fact there is no client available when the main page is requested which is when we want to do an update check, and that the extendable message event that this needs hasn't landed in Chrome Stable yet.
 - During an update, there is a race between the update check and the first resource being fetched, also a consequence of there being no client available when the main page is requested. If the update check completes first, it is possible the main page will be returned from a different version cache than the rest of the page's fetches. This is very hackily "solved" by delaying the update check by 1 second!
+- Cache updates are probably not atomic. Although the update waits for all requests to complete before opening the cache, the `put()` calls themselves are not atomic so could result in partial caches being written. This seems unlikely but is technically a problem, and I don't know how to fix it.
+- I think it is possible for a cache to be deleted while it is in use by another window.
 - probably some other issues I haven't found yet
 
 In other words, this doesn't work properly in any browser yet.
+
+## License
+
+MIT
