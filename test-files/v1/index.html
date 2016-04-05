@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+
+	<h1>SW test</h1>
+	<p>This HTML file is version 1</p>
+	<p>info.txt contains: <span id="infotxt"></span></p>
+	<img src="image.png" alt="image" />
+
+<script>
+"use strict";
+
+document.addEventListener("DOMContentLoaded", function ()
+{
+	// Display the contents of "info.txt" in the infotxt span.
+	fetch("info.txt").then(function (response)
+	{
+		return response.text();
+	}).then(function (text)
+	{
+		document.getElementById("infotxt").textContent = text;
+	});
+	
+	// Register service worker
+	if (!navigator.serviceWorker)
+	{
+		alert("service workers not supported");
+		return;
+	}
+	
+	navigator.serviceWorker.register("sw.js", { scope: "./" });
+});
+
+</script>
+</body>
+</html>
