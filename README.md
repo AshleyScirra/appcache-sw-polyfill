@@ -1,3 +1,5 @@
+# Note: this has been superseded by [scirra-offline-sw](https://github.com/AshleyScirra/scirra-offline-sw). Please use that instead!
+
 # appcache-sw-polyfill
 
 For background, see the blog post [Service Workers are a pain in the ass](https://www.scirra.com/blog/ashley/27/service-workers-are-a-pain-in-the-ass).
